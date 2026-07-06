@@ -5,6 +5,9 @@ Filters: Filters
 selected: selected
 'Deselect all': Deselect all
 'Confirm this action?': Confirm this action?
+'Are you sure?': Are you sure?
+'Yes': Yes
+'No': No
 
 column:
   boolean:

@@ -1,16 +1,17 @@
 {% set template = column.template(item) %}
 
-{# Chaîne de résolution : surcharge UX projet → chaque thème de la grille
-   (dans l'ordre de priorité) → base du bundle → template brut. #}
+{# Cherche le template de la colonne dans l'ordre : KibaticUX, thèmes de la grille (setTheme), base du datagrid, puis le nom de template. #}
 {% set candidates = ['@KibaticUX/datagrid/column_type/' ~ template] %}
 {% for theme in grid.themes %}
     {% set candidates = candidates|merge([theme ~ '/column_type/' ~ template]) %}
 {% endfor %}
 {% set candidates = candidates|merge(['@KibaticDatagrid/column_type/' ~ template, template]) %}
 
+{% set value = column.value(item) %}
+
 {% include candidates with {
     'column': column,
-    'parameters': column.templateParameters,
+    'parameters': column.resolveTemplateParameters(item, value),
     'item': item,
-    'value': column.value(item)
+    'value': value
 } %}

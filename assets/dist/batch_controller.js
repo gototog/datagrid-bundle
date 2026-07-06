@@ -12,6 +12,13 @@ import Swal from 'sweetalert2'
 export default class extends Controller {
     static targets = ['bar', 'toolbar', 'count', 'master', 'checkbox', 'form']
 
+    // Libellés de la confirmation, communs à la grille et fournis traduits par le projet.
+    static values = {
+        confirmTitle: String,
+        confirmYes: String,
+        confirmNo: String,
+    }
+
     connect() {
         this.refresh()
     }
@@ -30,6 +37,7 @@ export default class extends Controller {
         if (this.hasCountTarget) {
             this.countTarget.textContent = selected
         }
+
         if (this.hasBarTarget) {
             this.barTarget.hidden = selected === 0
             // Expose la hauteur de la barre pour décaler le sticky de l'en-tête
@@ -37,9 +45,11 @@ export default class extends Controller {
             const barHeight = selected === 0 ? 0 : this.barTarget.offsetHeight
             this.element.style.setProperty('--datagrid-batchbar-h', `${barHeight}px`)
         }
+
         if (this.hasToolbarTarget) {
             this.toolbarTarget.hidden = selected > 0
         }
+
         if (this.hasMasterTarget) {
             this.masterTarget.checked = selected > 0 && selected === total
             this.masterTarget.indeterminate = selected > 0 && selected < total
@@ -57,31 +67,29 @@ export default class extends Controller {
         for (const checkbox of this.checkboxTargets) {
             checkbox.checked = false
         }
+
         if (this.hasMasterTarget) {
             this.masterTarget.checked = false
             this.masterTarget.indeterminate = false
         }
+
         this.refresh()
     }
 
-    submit(event) {
-        const button = event.currentTarget
-        const url = button.dataset.url
-
+    submit({ params }) {
         const run = () => {
-            this.formTarget.action = url
+            this.formTarget.action = params.url
             this.formTarget.submit()
         }
 
-        if (button.dataset.confirm === 'true') {
-            // Même confirmation SweetAlert que le reste de l'app (style par défaut).
+        if (params.confirm) {
             Swal.fire({
-                title: 'Êtes-vous sûr ?',
-                text: button.dataset.confirmText,
+                title: this.confirmTitleValue,
+                text: params.confirmText,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Oui',
-                cancelButtonText: 'Non',
+                confirmButtonText: this.confirmYesValue,
+                cancelButtonText: this.confirmNoValue,
             }).then((result) => {
                 if (result.isConfirmed) {
                     run()

@@ -1,7 +1,15 @@
 {% set header_tr_class = block('grid_header_tr_class') is defined ? block('grid_header_tr_class') : '' %}
 
 {% if grid.pagination.totalItemCount > 0 %}
-    <div class="datagrid-card"{% if grid.hasBatchActions %} data-controller="batch"{% endif %}>
+    <div
+        class="datagrid-card"
+        {%- if grid.hasBatchActions %}
+            data-controller="batch"
+            data-batch-confirm-title-value="{{ 'Are you sure?'|trans({}, 'KibaticDatagridBundle') }}"
+            data-batch-confirm-yes-value="{{ 'Yes'|trans({}, 'KibaticDatagridBundle') }}"
+            data-batch-confirm-no-value="{{ 'No'|trans({}, 'KibaticDatagridBundle') }}"
+        {%- endif %}
+    >
         {% if grid.hasBatchActions %}
             {# Barre de sélection : masquée tant qu'aucune ligne n'est cochée #}
             <div class="datagrid-batchbar" data-batch-target="bar" hidden>
@@ -14,9 +22,9 @@
                             type="button"
                             class="btn btn-sm{% if action.variant %} btn-{{ action.variant }}{% endif %}"
                             data-action="batch#submit"
-                            data-url="{{ action.url }}"
-                            data-confirm="{{ action.confirm ? 'true' : 'false' }}"
-                            data-confirm-text="{{ 'Confirm this action?'|trans({}, 'KibaticDatagridBundle') }}"
+                            data-batch-url-param="{{ action.url }}"
+                            data-batch-confirm-param="{{ action.confirm ? 'true' : 'false' }}"
+                            data-batch-confirm-text-param="{{ 'Confirm this action?'|trans({}, 'KibaticDatagridBundle') }}"
                         >
                             {% if action.icon %}<twig:ux:icon name="{{ action.icon }}" />{% endif %}
                             {{ action.label|trans }}
@@ -30,8 +38,11 @@
         {% endif %}
 
         {% if grid.hasBatchActions %}
-            <form name="datagrid-batch-action" method="{{ grid.batchMethod }}" action="{{ grid.batchActions[0].url }}" data-batch-target="form">
-            <input type="hidden" name="_batch_csrf_token" value="{{ csrf_token(grid.batchActionsTokenId) }}">
+            {# Form autonome : les cases sont rattachées via l'attribut form= plutôt qu'en enveloppant
+               la table, car des cellules contiennent leurs propres formulaires (imbrication interdite en HTML). #}
+            <form id="datagrid-batch-action" name="datagrid-batch-action" method="{{ grid.batchMethod }}" action="{{ grid.batchActions[0].url }}" data-batch-target="form">
+                <input type="hidden" name="_batch_csrf_token" value="{{ csrf_token(grid.batchActionsTokenId) }}">
+            </form>
         {% endif %}
 
         <div class="datagrid-scroll">
@@ -86,7 +97,7 @@
                 <tr{{ grid.rowAttributes(item)|raw }}>
                     {% if grid.hasBatchActions %}
                         <td class="checkbox-cell">
-                            <input type="checkbox" class="checkbox" name="ids[]" value="{{ item.id }}" data-batch-target="checkbox" data-action="batch#refresh" />
+                            <input type="checkbox" class="checkbox" name="ids[]" value="{{ item.id }}" form="datagrid-batch-action" data-batch-target="checkbox" data-action="batch#refresh" />
                         </td>
                     {% endif %}
                     {% for column in grid.columns %}
@@ -99,8 +110,6 @@
             </tbody>
         </table>
         </div>
-
-        {% if grid.hasBatchActions %}</form>{% endif %}
 
         <div class="datagrid-footer">
             <span></span>

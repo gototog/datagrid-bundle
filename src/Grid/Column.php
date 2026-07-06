@@ -78,4 +78,20 @@ class Column
     {
         return $this->templateParameters[$parameterName] ?? $defaultValue;
     }
+
+    /**
+     * Résout les paramètres de template pour une ligne donnée : toute closure
+     * est invoquée avec la valeur de la colonne et l'entité de la ligne, les
+     * autres paramètres sont renvoyés tels quels.
+     *
+     * Permet des paramètres dynamiques (ex. variante de badge calculée selon la
+     * valeur) résolus côté PHP, sans jamais exécuter de callable depuis un template.
+     */
+    public function resolveTemplateParameters(object|array $entity, mixed $value): array
+    {
+        return array_map(
+            fn(mixed $parameter) => $parameter instanceof \Closure ? $parameter($value, $entity) : $parameter,
+            $this->templateParameters,
+        );
+    }
 }
