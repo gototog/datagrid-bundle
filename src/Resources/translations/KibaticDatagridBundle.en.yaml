@@ -1,7 +1,14 @@
-result_count: '{0}No result|{1}1 result|]1,Inf[%count% results'
+No result: No result
+Batch action: Batch action
+Select all: Select all
+Sort: Sort
+Filter: Filter
 Filters: Filters
 'More filters': More filters
 'Fewer filters': Fewer filters
+'Show all filters': Show all filters
+'Show less filters': Show less filters
+Reset: Reset
 selected: selected
 'Deselect all': Deselect all
 'Confirm this action?': Confirm this action?

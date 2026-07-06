@@ -6,6 +6,8 @@ Filter: Filtrer
 Filters: Filtres
 'More filters': Plus de filtres
 'Fewer filters': Moins de filtres
+'Show all filters': Voir tous les filtres
+'Show less filters': Voir moins de filtres
 Reset: Réinitialiser
 selected: sélectionnés
 'Deselect all': Tout désélectionner
@@ -13,7 +15,6 @@ selected: sélectionnés
 'Are you sure?': Êtes-vous sûr ?
 'Yes': Oui
 'No': Non
-result_count: '{0}Aucun résultat|{1}1 résultat|]1,Inf[%count% résultats'
 
 column:
   boolean:
