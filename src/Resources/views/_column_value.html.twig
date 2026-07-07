@@ -7,11 +7,9 @@
 {% endfor %}
 {% set candidates = candidates|merge(['@KibaticDatagrid/column_type/' ~ template, template]) %}
 
-{% set value = column.value(item) %}
-
 {% include candidates with {
     'column': column,
     'parameters': column.templateParameters(item),
     'item': item,
-    'value': value
+    'value': column.value(item)
 } %}
