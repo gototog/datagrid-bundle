@@ -118,6 +118,7 @@ class GridBuilder
         ?string $sortable = null,
         callable|string|null $sortableQuery = null,
         bool $enabled = true,
+        array $headerAttr = [],
     ): self {
         $this->columns[] = new Column(
             $name,
@@ -127,6 +128,7 @@ class GridBuilder
             $sortable,
             $sortableQuery,
             $enabled,
+            $headerAttr,
         );
 
         return $this;

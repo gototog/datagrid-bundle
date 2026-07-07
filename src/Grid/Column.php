@@ -15,6 +15,11 @@ class Column
     public ?string $sortable;
     public $sortableQuery;
     public bool $enabled;
+    /**
+     * @var array Attributs HTML statiques du <th> de la colonne (ex. ['class' => 'num']).
+     *            Rendus tels quels côté en-tête : indépendants de la ligne.
+     */
+    public array $headerAttr;
 
     public function __construct(
         string|TranslatableMessage $name,
@@ -24,6 +29,7 @@ class Column
         string|array|null $sortable = null,
         callable|string|null $sortableQuery = null,
         bool $enabled = true,
+        array $headerAttr = [],
     ) {
         $this->name = $name;
         $this->value = $value ?? fn($item) => $item;
@@ -32,6 +38,7 @@ class Column
         $this->sortable = $sortable;
         $this->sortableQuery = $sortableQuery;
         $this->enabled = $enabled;
+        $this->headerAttr = $headerAttr;
     }
 
     public function getTemplate(null|object|array $entity = null): string
