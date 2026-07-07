@@ -11,7 +11,7 @@
 
 {% include candidates with {
     'column': column,
-    'parameters': column.resolveTemplateParameters(item, value),
+    'parameters': column.templateParameters(item),
     'item': item,
     'value': value
 } %}

@@ -114,7 +114,7 @@ class GridBuilder
         string|TranslatableMessage $name,
         string|callable|null $value = null,
         ?string $template = null,
-        array $templateParameters = [],
+        array|\Closure $templateParameters = [],
         ?string $sortable = null,
         callable|string|null $sortableQuery = null,
         bool $enabled = true,

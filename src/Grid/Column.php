@@ -11,7 +11,7 @@ class Column
     public string|TranslatableMessage $name;
     public $value;
     private ?string $template;
-    public array $templateParameters;
+    public array|\Closure $templateParameters;
     public ?string $sortable;
     public $sortableQuery;
     public bool $enabled;
@@ -20,7 +20,7 @@ class Column
         string|TranslatableMessage $name,
         string|callable|null $value = null,
         ?string $template = null,
-        array $templateParameters = [],
+        array|\Closure $templateParameters = [],
         string|array|null $sortable = null,
         callable|string|null $sortableQuery = null,
         bool $enabled = true,
@@ -76,22 +76,32 @@ class Column
 
     public function getTemplateParameter(string $parameterName, ?string $defaultValue = null)
     {
+        if ($this->templateParameters instanceof \Closure) {
+            return $defaultValue;
+        }
+
         return $this->templateParameters[$parameterName] ?? $defaultValue;
     }
 
     /**
-     * Résout les paramètres de template pour une ligne donnée : toute closure
-     * est invoquée avec la valeur de la colonne et l'entité de la ligne, les
-     * autres paramètres sont renvoyés tels quels.
-     *
-     * Permet des paramètres dynamiques (ex. variante de badge calculée selon la
-     * valeur) résolus côté PHP, sans jamais exécuter de callable depuis un template.
+     * Résout les paramètres de template pour une ligne donnée. Comme pour la
+     * valeur (getValue), si les paramètres sont une closure, elle est invoquée
+     * avec l'entité de la ligne et retourne le tableau de paramètres ; sinon le
+     * tableau statique est renvoyé tel quel.
      */
-    public function resolveTemplateParameters(object|array $entity, mixed $value): array
+    public function getTemplateParameters(object|array $entity): array
     {
-        return array_map(
-            fn(mixed $parameter) => $parameter instanceof \Closure ? $parameter($value, $entity) : $parameter,
-            $this->templateParameters,
-        );
+        if ($this->templateParameters instanceof \Closure) {
+            if (is_array($entity)) {
+                $extra = $entity;
+                $entity = $entity[0];
+            }
+
+            $callback = $this->templateParameters;
+
+            return $callback($entity, $extra ?? []);
+        }
+
+        return $this->templateParameters;
     }
 }
