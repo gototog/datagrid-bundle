@@ -17,7 +17,6 @@ class Column
     public bool $enabled;
     /**
      * @var array Attributs HTML statiques du <th> de la colonne (ex. ['class' => 'num']).
-     *            Rendus tels quels côté en-tête : indépendants de la ligne.
      */
     public array $headerAttr;
 

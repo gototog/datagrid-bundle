@@ -82,11 +82,12 @@ class Grid
         return $this->batchActionsTokenId;
     }
 
-    /**
-     * Thème structurel (gabarits de la grille) : le premier de la chaîne.
-     */
     public function getTheme(): string
     {
+        if ($this->themes === []) {
+            throw new \LogicException('Aucun thème défini : setTheme() requiert au moins un thème.');
+        }
+
         return $this->themes[0];
     }
 
