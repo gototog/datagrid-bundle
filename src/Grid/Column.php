@@ -80,15 +80,6 @@ class Column
         }
     }
 
-    public function getTemplateParameter(string $parameterName, ?string $defaultValue = null)
-    {
-        if ($this->templateParameters instanceof \Closure) {
-            return $defaultValue;
-        }
-
-        return $this->templateParameters[$parameterName] ?? $defaultValue;
-    }
-
     /**
      * Résout les paramètres de template pour une ligne donnée. Comme pour la
      * valeur (getValue), si les paramètres sont une closure, elle est invoquée
