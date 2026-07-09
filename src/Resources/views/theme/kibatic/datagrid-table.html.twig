@@ -101,8 +101,8 @@
                         </td>
                     {% endif %}
                     {% for column in grid.columns %}
-                        {% set cellParameters = column.templateParameters(item) %}
-                        <td {% if cellParameters.col_class is defined %}class="{{ cellParameters.col_class }}"{% endif %}>
+                        {% set col_class = column.templateParameter('col_class', null, item) %}
+                        <td {% if col_class is not null %}class="{{ col_class }}"{% endif %}>
                             {% include '@KibaticDatagrid/_column_value.html.twig' %}
                         </td>
                     {% endfor %}

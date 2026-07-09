@@ -81,6 +81,28 @@ class Column
     }
 
     /**
+     * Lit un paramètre de template avec valeur par défaut. Avec l'entité de la
+     * ligne, les paramètres sont résolus par ligne (closure incluse) ; sans
+     * entité, une closure globale ne peut pas être résolue et le défaut est
+     * renvoyé.
+     */
+    public function getTemplateParameter(
+        string $parameterName,
+        mixed $defaultValue = null,
+        object|array|null $entity = null,
+    ): mixed {
+        if ($entity !== null) {
+            return $this->getTemplateParameters($entity)[$parameterName] ?? $defaultValue;
+        }
+
+        if ($this->templateParameters instanceof \Closure) {
+            return $defaultValue;
+        }
+
+        return $this->templateParameters[$parameterName] ?? $defaultValue;
+    }
+
+    /**
      * Résout les paramètres de template pour une ligne donnée. Comme pour la
      * valeur (getValue), si les paramètres sont une closure, elle est invoquée
      * avec l'entité de la ligne et retourne le tableau de paramètres ; sinon le
