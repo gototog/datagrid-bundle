@@ -91,15 +91,11 @@ class Column
         mixed $defaultValue = null,
         object|array|null $entity = null,
     ): mixed {
-        if ($entity !== null) {
-            return $this->getTemplateParameters($entity)[$parameterName] ?? $defaultValue;
-        }
+        $parameters = $entity !== null
+            ? $this->getTemplateParameters($entity)
+            : (is_array($this->templateParameters) ? $this->templateParameters : []);
 
-        if ($this->templateParameters instanceof \Closure) {
-            return $defaultValue;
-        }
-
-        return $this->templateParameters[$parameterName] ?? $defaultValue;
+        return $parameters[$parameterName] ?? $defaultValue;
     }
 
     /**
