@@ -80,22 +80,16 @@ class Column
         }
     }
 
-    /**
-     * Lit un paramètre de template avec valeur par défaut. Avec l'entité de la
-     * ligne, les paramètres sont résolus par ligne (closure incluse) ; sans
-     * entité, une closure globale ne peut pas être résolue et le défaut est
-     * renvoyé.
-     */
     public function getTemplateParameter(
         string $parameterName,
         mixed $defaultValue = null,
         object|array|null $entity = null,
     ): mixed {
-        $parameters = $entity !== null
-            ? $this->getTemplateParameters($entity)
-            : (is_array($this->templateParameters) ? $this->templateParameters : []);
+        if ($entity !== null) {
+            return $this->getTemplateParameters($entity)[$parameterName] ?? $defaultValue;
+        }
 
-        return $parameters[$parameterName] ?? $defaultValue;
+        return $this->templateParameters[$parameterName] ?? $defaultValue;
     }
 
     /**
