@@ -1,8 +1,15 @@
 {% set template = column.template(item) %}
 
-{% include ['@KibaticUX/datagrid/column_type/' ~ template, grid.theme ~ '/column_type/' ~ template, '@KibaticDatagrid/column_type/' ~ template, template] with {
+{# Cherche le template de la colonne dans l'ordre : KibaticUX, thèmes de la grille (setTheme), base du datagrid, puis le nom de template. #}
+{% set candidates = ['@KibaticUX/datagrid/column_type/' ~ template] %}
+{% for theme in grid.themes %}
+    {% set candidates = candidates|merge([theme ~ '/column_type/' ~ template]) %}
+{% endfor %}
+{% set candidates = candidates|merge(['@KibaticDatagrid/column_type/' ~ template, template]) %}
+
+{% include candidates with {
     'column': column,
-    'parameters': column.templateParameters,
+    'parameters': column.templateParameters(item),
     'item': item,
     'value': column.value(item)
 } %}

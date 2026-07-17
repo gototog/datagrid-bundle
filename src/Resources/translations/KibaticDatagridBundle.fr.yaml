@@ -3,9 +3,18 @@ Batch action: Traitement par lot
 Select all: Tout selectionner
 Sort: Trier
 Filter: Filtrer
+Filters: Filtres
+'More filters': Plus de filtres
+'Fewer filters': Moins de filtres
+'Show all filters': Voir tous les filtres
+'Show less filters': Voir moins de filtres
 Reset: Réinitialiser
-Show all filters: Voir tous les filtres
-Show less filters: Voir moins de filtres
+selected: sélectionnés
+'Deselect all': Tout désélectionner
+'Confirm this action?': Confirmer cette action ?
+'Are you sure?': Êtes-vous sûr ?
+'Yes': Oui
+'No': Non
 
 column:
   boolean:

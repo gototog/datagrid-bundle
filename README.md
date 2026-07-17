@@ -145,6 +145,10 @@ Or a more classic twig approach :
 Documentation
 -------------
 
+[Fonctionnement du bundle](docs/fonctionnement.md) : vue d'ensemble (lecture rapide) et référence détaillée (colonnes, filtres, thèmes, actions, rendu).
+
+[Architecture interne](docs/internals.md) : guide du contributeur pour intervenir dans le bundle (pipeline de rendu, invariants, checklists d'intervention).
+
 You can find a more advanced example on [how to generate your datagrid](docs/advanced-example.md).
 
 If you want to customize the pagination, use the knp paginator configuration.

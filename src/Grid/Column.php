@@ -11,19 +11,24 @@ class Column
     public string|TranslatableMessage $name;
     public $value;
     private ?string $template;
-    public array $templateParameters;
+    public array|\Closure $templateParameters;
     public ?string $sortable;
     public $sortableQuery;
     public bool $enabled;
+    /**
+     * @var array Attributs HTML statiques du <th> de la colonne (ex. ['class' => 'num']).
+     */
+    public array $headerAttr;
 
     public function __construct(
         string|TranslatableMessage $name,
         string|callable|null $value = null,
         ?string $template = null,
-        array $templateParameters = [],
+        array|\Closure $templateParameters = [],
         string|array|null $sortable = null,
         callable|string|null $sortableQuery = null,
         bool $enabled = true,
+        array $headerAttr = [],
     ) {
         $this->name = $name;
         $this->value = $value ?? fn($item) => $item;
@@ -32,6 +37,7 @@ class Column
         $this->sortable = $sortable;
         $this->sortableQuery = $sortableQuery;
         $this->enabled = $enabled;
+        $this->headerAttr = $headerAttr;
     }
 
     public function getTemplate(null|object|array $entity = null): string
@@ -74,8 +80,45 @@ class Column
         }
     }
 
-    public function getTemplateParameter(string $parameterName, ?string $defaultValue = null)
+    public function getTemplateParameter(
+        string $parameterName,
+        mixed $defaultValue = null,
+        object|array|null $entity = null,
+    ): mixed {
+        return $this->getTemplateParameters($entity)[$parameterName] ?? $defaultValue;
+    }
+
+    /**
+     * Résout les paramètres de template pour une ligne donnée. Comme pour la
+     * valeur (getValue), si les paramètres sont une closure, elle est invoquée
+     * avec l'entité de la ligne et retourne le tableau de paramètres ; sinon le
+     * tableau statique est renvoyé tel quel.
+     *
+     * L'entité n'est facultative que pour des paramètres statiques : une closure
+     * n'est pas résolvable hors d'une ligne.
+     */
+    public function getTemplateParameters(object|array|null $entity = null): array
     {
-        return $this->templateParameters[$parameterName] ?? $defaultValue;
+        if ($this->templateParameters instanceof \Closure) {
+            if ($entity === null) {
+                $columnName = $this->name instanceof TranslatableMessage ? $this->name->getMessage() : $this->name;
+
+                throw new \LogicException(sprintf(
+                    'Colonne "%s" : les paramètres de template sont une closure, ils ne sont pas résolvables sans entité. Passez l\'entité de la ligne, ou utilisez headerAttr pour les attributs du <th>.',
+                    $columnName,
+                ));
+            }
+
+            if (is_array($entity)) {
+                $extra = $entity;
+                $entity = $entity[0];
+            }
+
+            $callback = $this->templateParameters;
+
+            return $callback($entity, $extra ?? []);
+        }
+
+        return $this->templateParameters;
     }
 }

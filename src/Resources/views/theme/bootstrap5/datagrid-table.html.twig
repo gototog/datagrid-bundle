@@ -20,11 +20,11 @@
             {% for column in grid.columns %}
                 {% set th_class = block('grid_header_th_class') is defined ? block('grid_header_th_class') : '' %}
 
-                {% if column.templateParameter('col_class', null) is not null %}
-                    {% set th_class = th_class ~ ' ' ~ column.templateParameter('col_class', null) %}
+                {% if column.headerAttr.class is defined %}
+                    {% set th_class = th_class ~ ' ' ~ column.headerAttr.class %}
                 {% endif %}
 
-                <th {% if th_class is not empty %}class="{{ th_class }}"{% endif %}>
+                <th {% if th_class is not empty %}class="{{ th_class }}"{% endif %}{{ column.headerAttr|filter((v, k) => k != 'class')|inline_attr }}>
                     {% if not (column.name starts with '_') %}
                         {% if column.sortable is not null %}
                             {% set sortUrl = path(
@@ -53,7 +53,8 @@
                     </td>
                 {% endif %}
                 {% for column in grid.columns %}
-                    <td {% if column.templateParameter('col_class', null) is not null %}class="{{ column.templateParameter('col_class', null) }}"{% endif %}>
+                    {% set col_class = column.templateParameter('col_class', null, item) %}
+                    <td {% if col_class is not null %}class="{{ col_class }}"{% endif %}>
                         {% include '@KibaticDatagrid/_column_value.html.twig' %}
                     </td>
                 {% endfor %}

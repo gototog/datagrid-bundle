@@ -15,7 +15,10 @@ class Grid
     private array $batchActions;
     private string $batchActionsTokenId;
     private string $batchMethod;
-    private string $theme;
+    /**
+     * @var string[] Chaîne de thèmes, du plus prioritaire au moins prioritaire.
+     */
+    private array $themes;
     private $rowAttributesCallback = null;
     private array $filterLayout;
 
@@ -26,7 +29,7 @@ class Grid
         array $columns,
         Request $request,
         PaginationInterface $pagination,
-        string $theme,
+        array $themes,
         string $batchActionsTokenId,
         array $batchActions = [],
         string $batchMethod = 'POST',
@@ -39,7 +42,7 @@ class Grid
         $this->batchActions = $batchActions;
         $this->batchMethod = $batchMethod;
         $this->batchActionsTokenId = $batchActionsTokenId;
-        $this->theme = $theme;
+        $this->themes = $themes;
         $this->rowAttributesCallback = $rowAttributesCallback;
         $this->filterLayout = $filterLayout;
     }
@@ -81,7 +84,22 @@ class Grid
 
     public function getTheme(): string
     {
-        return $this->theme;
+        if ($this->themes === []) {
+            throw new \LogicException('Aucun thème défini : setTheme() requiert au moins un thème.');
+        }
+
+        return $this->themes[0];
+    }
+
+    /**
+     * Chaîne complète de thèmes, du plus prioritaire au moins prioritaire.
+     * Sert au fallback de résolution des column types.
+     *
+     * @return string[]
+     */
+    public function getThemes(): array
+    {
+        return $this->themes;
     }
 
     public function getFilterLayout(): array

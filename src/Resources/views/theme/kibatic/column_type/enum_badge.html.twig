@@ -1,0 +1,16 @@
+{#
+    Colonne enum_badge — rend une valeur (enum de préférence) en badge coloré.
+
+    Paramètres de colonne :
+      - variant : 'success'|'warning'|'danger'|'info'|'brand'|'neutral', ou une
+                  closure fn(value, item) => variante (résolue côté PHP, permet
+                  une logique custom). Défaut : 'neutral'.
+
+    Le libellé vient de value.label (enum avec méthode label()), sinon value.name, sinon la valeur.
+#}
+{% if value is not null %}
+    {% set variant = parameters.variant|default('neutral') %}
+    {% set label = attribute(value, 'label') is defined ? value.label : (value.name ?? value) %}
+
+    <span class="badge{% if variant and variant != 'neutral' %} badge-{{ variant }}{% endif %}">{{ label|trans }}</span>
+{% endif %}
